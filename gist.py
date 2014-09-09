@@ -36,7 +36,9 @@ def catch_errors(fn):
         try:
             return fn(*args, **kwargs)
         except MissingCredentialsException:
-            sublime.error_message("Gist: GitHub token isn't provided in Gist.sublime-settings file. All other authorization methods is deprecated.")
+            sublime.error_message(
+                "Gist: GitHub token isn't provided in Gist.sublime-settings file"
+                "All other authorization methods is deprecated.")
             user_settings_path = os.path.join(sublime.packages_path(), 'User', 'Gist.sublime-settings')
             if not os.path.exists(user_settings_path):
                 default_settings_path = os.path.join(sublime.packages_path(), 'Gist', 'Gist.sublime-settings')
@@ -118,14 +120,13 @@ def insert_gist(gist_url):
     gist = api_request(gist_url)
     files = sorted(gist['files'].keys())
 
-
     for gist_filename in files:
         view = sublime.active_window().active_view()
 
         is_auto_indent = view.settings().get('auto_indent')
 
         if PY3:
-            if is_auto_indent == True:
+            if is_auto_indent:
                 view.settings().set('auto_indent',False)
                 view.run_command('insert', {
                     'characters': gist['files'][gist_filename]['content'],
